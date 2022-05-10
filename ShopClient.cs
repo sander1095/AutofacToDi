@@ -54,14 +54,16 @@ namespace AutofacToDi
             // Using other dependencies
             _someOtherDependency.Foo();
 
+            // Note: You could also do this inprogram.cs with AddHTtpCLient.. You can inject the shoplcientsettingoptions there and set the default uri!
             var url = _shopClientSettingsOptions.Uri;
 
-            // TODO: Now we need to pas the cookies to the client.. but watch out with cookies and httpclientfactory:
-            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-6.0#cookies
-            // Our HTTPClient is already created, how do we pass the cookies to it? Or do we need to do this somehow in the httpmessagehandler or something???
-            var cookies = new CookieCollection();
-            cookies.Add(new Cookie(CookieKeys.SessionId, _cookieService.RequestCookies.SessionId) { Domain = uri.Host });
-            cookies.Add(new Cookie(CookieKeys.Geo, _cookieService.RequestCookies.Geo) { Domain = uri.Host });
+
+            // @Ding: You posted this custom cookie code. I am wondering if you need this; if you only are adding cookies to the request that come from the ORIGINAL request,
+            // you might be able to get away with using Program.cs and the header propogation logic. Otherwise I think you should use HttpRequestMessage and Headers.Add("Cookie", YOUR_COOKIES_AS_STRING_HERE)
+
+            //var cookies = new CookieCollection();
+            //cookies.Add(new Cookie(CookieKeys.SessionId, _cookieService.RequestCookies.SessionId) { Domain = uri.Host });
+            //cookies.Add(new Cookie(CookieKeys.Geo, _cookieService.RequestCookies.Geo) { Domain = uri.Host });
                        
 
             // You could also create the client in the constructor. But then this class should not be a singleton because it wouldnt get disposed! Read this for more info:
