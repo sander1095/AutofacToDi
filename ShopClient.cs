@@ -19,8 +19,8 @@ namespace AutofacToDi
 
         public virtual void SomeMethod()
         {
-            // You could also do this CreateClient in the base() of ShopCLient if you can't change this class
-            var httpClient = _httpClientFactory.CreateClient("BaseClient");
+            // You could also do this CreateClient in the base() of ShopCLient if you can't change this class, but then it shouldnt be a singleton!
+            using var httpClient = _httpClientFactory.CreateClient("BaseClient");
 
             // Do stuff
 
@@ -64,10 +64,9 @@ namespace AutofacToDi
             cookies.Add(new Cookie(CookieKeys.Geo, _cookieService.RequestCookies.Geo) { Domain = uri.Host });
                        
 
-
-            // You could also create the client in the constructor. Read this for more info:
+            // You could also create the client in the constructor. But then this class should not be a singleton because it wouldnt get disposed! Read this for more info:
             // https://docs.microsoft.com/en-us/dotnet/api/system.net.http.ihttpclientfactory.createclient?view=dotnet-plat-ext-6.0
-            var httpClient = _httpClientFactory.CreateClient("ShopClient");
+            using var httpClient = _httpClientFactory.CreateClient("ShopClient");
 
             await httpClient.PostAsync(url, new StringContent("Whatever content you want here"));
         }
